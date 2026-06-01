@@ -3,7 +3,7 @@ set -e
 
 cd /var/www/html
 
-# Crear .env desde variables de entorno si no existe
+# Crear .env desde variables de entorno
 if [ ! -f .env ]; then
     echo "APP_NAME=${APP_NAME:-AccountingSystem}" > .env
     echo "APP_ENV=${APP_ENV:-production}" >> .env
@@ -29,18 +29,16 @@ mkdir -p /var/www/html/database
 touch /var/www/html/database/database.sqlite
 chown -R www-data:www-data /var/www/html/database
 
-# Solo generar key si APP_KEY está vacío
-if [ -z "$APP_KEY" ]; then
-    php artisan key:generate --force
-fi
+# Generar key y escribirla en el .env
+php artisan key:generate --force
 
-# Primero migrar
+# Migrar y seed
 php artisan migrate --force --seed
 
 # Storage link
 php artisan storage:link || true
 
-# Limpiar y cachear
+# Cachear
 php artisan optimize:clear
 php artisan config:cache
 php artisan route:cache

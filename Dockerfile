@@ -42,10 +42,12 @@ COPY --from=composer:latest /usr/bin/composer /usr/bin/composer
 
 WORKDIR /var/www/html
 
+# Copiar archivos del proyecto
 COPY . .
 
-# Instalar dependencias PHP
-RUN composer install --no-dev --optimize-autoloader --no-interaction
+# Eliminar composer.lock y reinstalar limpio
+RUN rm -f composer.lock \
+    && composer install --no-dev --optimize-autoloader --no-interaction
 
 # Instalar dependencias Node y compilar assets
 RUN npm install && npm run build
