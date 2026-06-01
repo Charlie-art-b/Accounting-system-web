@@ -29,20 +29,20 @@ mkdir -p /var/www/html/database
 touch /var/www/html/database/database.sqlite
 chown -R www-data:www-data /var/www/html/database
 
-# Generar app key si está vacío
+# Generar app key
 php artisan key:generate --force
 
-# Limpiar y optimizar caché
-php artisan optimize:clear
-php artisan config:cache
-php artisan route:cache
-php artisan view:cache
-
-# Migraciones
+# Primero migrar para que existan las tablas
 php artisan migrate --force --seed
 
 # Storage link
 php artisan storage:link || true
+
+# Ahora sí limpiar y cachear (las tablas ya existen)
+php artisan optimize:clear
+php artisan config:cache
+php artisan route:cache
+php artisan view:cache
 
 # Iniciar servicios
 exec supervisord -c /etc/supervisord.conf
