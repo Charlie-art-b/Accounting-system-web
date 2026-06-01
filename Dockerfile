@@ -1,3 +1,4 @@
+# syntax=docker/dockerfile:1
 FROM php:8.2-fpm-alpine
 
 # Instalar dependencias del sistema

@@ -3,6 +3,7 @@ services:
     name: accounting-system-web
     runtime: docker
     dockerfilePath: ./Dockerfile
+    dockerContext: .
     envVars:
       - key: APP_ENV
         value: production
