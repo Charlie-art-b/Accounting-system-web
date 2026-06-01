@@ -12,7 +12,7 @@ if [ ! -f .env ]; then
     echo "APP_URL=${APP_URL:-http://localhost}" >> .env
     echo "" >> .env
     echo "LOG_CHANNEL=stderr" >> .env
-    echo "LOG_LEVEL=error" >> .env
+    echo "LOG_LEVEL=${LOG_LEVEL:-error}" >> .env
     echo "" >> .env
     echo "DB_CONNECTION=${DB_CONNECTION:-sqlite}" >> .env
     echo "DB_DATABASE=${DB_DATABASE:-/var/www/html/database/database.sqlite}" >> .env
@@ -29,16 +29,18 @@ mkdir -p /var/www/html/database
 touch /var/www/html/database/database.sqlite
 chown -R www-data:www-data /var/www/html/database
 
-# Generar app key
-php artisan key:generate --force
+# Solo generar key si APP_KEY está vacío
+if [ -z "$APP_KEY" ]; then
+    php artisan key:generate --force
+fi
 
-# Primero migrar para que existan las tablas
+# Primero migrar
 php artisan migrate --force --seed
 
 # Storage link
 php artisan storage:link || true
 
-# Ahora sí limpiar y cachear (las tablas ya existen)
+# Limpiar y cachear
 php artisan optimize:clear
 php artisan config:cache
 php artisan route:cache
