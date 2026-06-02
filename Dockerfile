@@ -48,8 +48,7 @@ COPY . .
 RUN composer install --no-dev --optimize-autoloader --no-interaction
 
 # Instalar dependencias Node y compilar assets
-RUN npm install && npm run build
-
+RUN npm install && npm run build && ls -la public/build/
 # Permisos
 RUN chown -R www-data:www-data /var/www/html \
     && chmod -R 755 /var/www/html/storage \
